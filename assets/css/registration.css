@@ -1,0 +1,163 @@
+.apls-faext-consent { display:flex; align-items:flex-start; gap:.6rem; margin:1rem 0; line-height:1.5; font-size:.9rem; }
+.apls-faext-consent input { flex:0 0 auto; margin-top:.2rem; }
+.apls-faext-native-consent { margin:1rem 0 !important; }
+.apls-faext-native-consent label { display:flex !important; align-items:flex-start; gap:.6rem; line-height:1.5; }
+.apls-faext-native-consent input { width:auto !important; flex:0 0 auto; margin:.2rem 0 0 !important; }
+.apls-faext-email-status { font-size:.85rem; margin:.35rem 0; }
+/* Only normalize ACF fields rendered by APlusPlugins; preserve ACF column percentages. */
+.apls-faext-acf-host, .apls-faext-acf-fields { width:100%; min-width:0; max-width:100%; box-sizing:border-box; }
+.apls-faext-acf-host .acf-fields, .apls-faext-acf-fields { display:flow-root; }
+.apls-faext-acf-host .acf-field, .apls-faext-acf-fields .acf-field {
+    box-sizing:border-box; min-width:0; margin:0 !important; padding:10px 0 !important;
+}
+/* Keep paired ACF columns separated without indenting the outer form edges.
+ * The inner edge receives the gutter, rather than padding every field. */
+.apls-faext-acf-host .acf-field[data-width],
+.apls-faext-acf-fields .acf-field[data-width] { padding-right:10px !important; }
+.apls-faext-acf-host .acf-field[data-width] + .acf-field[data-width],
+.apls-faext-acf-fields .acf-field[data-width] + .acf-field[data-width] {
+    padding-left:10px !important;
+    padding-right:0 !important;
+}
+.apls-faext-acf-host .acf-label, .apls-faext-acf-fields .acf-label { margin:0 0 5px !important; width:auto !important; }
+.apls-faext-acf-host .acf-label label, .apls-faext-acf-fields .acf-label label {
+    display:block !important; width:auto !important; white-space:normal !important; margin:0 0 3px !important;
+}
+.apls-faext-acf-host .acf-label p.description, .apls-faext-acf-fields .acf-label p.description {
+    margin:2px 0 4px !important; width:auto !important; line-height:1.4;
+}
+.apls-faext-acf-host .acf-input, .apls-faext-acf-fields .acf-input { width:100%; min-width:0; margin:0 !important; }
+.apls-faext-acf-host .acf-input input:not([type=checkbox]):not([type=radio]),
+.apls-faext-acf-fields .acf-input input:not([type=checkbox]):not([type=radio]) { max-width:100%; box-sizing:border-box; }
+.apls-faext-acf-host .acf-checkbox-list li label, .apls-faext-acf-fields .acf-checkbox-list li label,
+.apls-faext-acf-host .acf-radio-list li label, .apls-faext-acf-fields .acf-radio-list li label {
+    display:inline-flex !important; align-items:center; gap:.45rem; width:auto !important; white-space:normal !important;
+}
+.apls-faext-acf-host .acf-checkbox-list input, .apls-faext-acf-fields .acf-checkbox-list input {
+    flex:0 0 auto; width:auto !important; margin:0 !important;
+}
+@media(max-width:767px) {
+    .apls-faext-acf-host .acf-field[data-width], .apls-faext-acf-fields .acf-field[data-width] { float:none !important; width:100% !important; padding-left:0 !important; padding-right:0 !important; }
+}
+
+/* FluentAuth shortcode themes sometimes apply narrow, floated or grid labels.
+   Isolate the consent row and provide an explicit text column. */
+#flsRegistrationForm .fls_registration_fields > .apls-faext-consent,
+#flsRegistrationForm .apls-faext-consent,
+#registerform .apls-faext-native-consent > label {
+    display: grid !important;
+    grid-template-columns: 18px minmax(0, 1fr) !important;
+    align-items: start !important;
+    column-gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    float: none !important;
+    clear: both !important;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+    writing-mode: horizontal-tb !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+    text-align: left !important;
+}
+#flsRegistrationForm .apls-faext-consent > input[type="checkbox"],
+#registerform .apls-faext-native-consent input[type="checkbox"] {
+    display: block !important;
+    grid-column: 1 !important;
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px !important;
+    max-width: 16px !important;
+    margin: 2px 0 0 !important;
+    padding: 0 !important;
+    flex: none !important;
+    float: none !important;
+}
+#flsRegistrationForm .apls-faext-consent-text,
+#registerform .apls-faext-consent-text {
+    display: block !important;
+    grid-column: 2 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    writing-mode: horizontal-tb !important;
+    line-height: 1.5 !important;
+    text-align: left !important;
+}
+
+/* FluentAuth native verification is a separate step: keep extras out of view. */
+body.fls_register_form_token #registerform .apls-faext-acf-host,
+body.fls_register_form_token #registerform .apls-faext-native-consent { display: none !important; }
+
+/* Keep checkbox and radio options in their existing ACF column, not a
+ * centered shrink-to-fit wrapper. Dynamic "Other" inputs may grow naturally. */
+.apls-faext-acf-host .acf-field-checkbox .acf-input,
+.apls-faext-acf-host .acf-field-radio .acf-input,
+.apls-faext-acf-fields .acf-field-checkbox .acf-input,
+.apls-faext-acf-fields .acf-field-radio .acf-input {
+    text-align: left !important;
+}
+.apls-faext-acf-host .acf-checkbox-list,
+.apls-faext-acf-host .acf-radio-list,
+.apls-faext-acf-fields .acf-checkbox-list,
+.apls-faext-acf-fields .acf-radio-list {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+    list-style: none !important;
+}
+.apls-faext-acf-host .acf-checkbox-list li,
+.apls-faext-acf-host .acf-radio-list li,
+.apls-faext-acf-fields .acf-checkbox-list li,
+.apls-faext-acf-fields .acf-radio-list li {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 4px !important;
+    text-align: left !important;
+}
+.apls-faext-acf-host .acf-checkbox-list li label,
+.apls-faext-acf-host .acf-radio-list li label,
+.apls-faext-acf-fields .acf-checkbox-list li label,
+.apls-faext-acf-fields .acf-radio-list li label {
+    display: inline-flex !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    gap: 7px !important;
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important;
+    vertical-align: top !important;
+}
+.apls-faext-acf-host .acf-checkbox-list input[type="checkbox"],
+.apls-faext-acf-host .acf-radio-list input[type="radio"],
+.apls-faext-acf-fields .acf-checkbox-list input[type="checkbox"],
+.apls-faext-acf-fields .acf-radio-list input[type="radio"] {
+    display: inline-block !important;
+    flex: 0 0 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px !important;
+    max-width: 16px !important;
+    margin: 1px 0 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    float: none !important;
+    position: static !important;
+}
+.apls-faext-acf-host .acf-checkbox-list li input[type="text"],
+.apls-faext-acf-host .acf-radio-list li input[type="text"],
+.apls-faext-acf-fields .acf-checkbox-list li input[type="text"],
+.apls-faext-acf-fields .acf-radio-list li input[type="text"] {
+    min-width: 0 !important;
+    max-width: 100% !important;
+}
