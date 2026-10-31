@@ -3,7 +3,7 @@
  * Plugin Name: FluentAuth Registration Extensions
  * Plugin URI: https://aplusplugins.com/
  * Description: Extensible FluentAuth registration validation, optional consent and CRM synchronization.
- * Version: 1.0.26
+ * Version: 1.0.29
  * Requires at least: 6.5
  * Requires PHP: 8.2
  * Requires Plugins: fluent-security
@@ -16,7 +16,7 @@
  */
 namespace APLS\FluentAuthExtensions;
 if (!defined('ABSPATH')) { exit; }
-const VERSION = '1.0.26';
+const VERSION = '1.0.29';
 const FILE = __FILE__;
 require_once __DIR__ . '/includes/class-plugin.php';
 add_action('plugins_loaded', [Plugin::class, 'boot'], 30);

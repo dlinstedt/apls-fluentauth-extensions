@@ -65,14 +65,12 @@ final class ACF_Adapter {
     }
     public static function validate_field_group_save(): void {
         if (!is_admin() || !current_user_can('manage_options') || !self::selected()) { return; }
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
+        if (!isset($_POST['_acf_nonce']) || !is_string($_POST['_acf_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['_acf_nonce'])), 'acf_form')) { return; }
         $post_id=isset($_POST['post_ID']) ? absint($_POST['post_ID']) : 0;
         if (!$post_id || !in_array('group_'.$post_id,self::selected(),true) && !in_array((string)$post_id,self::selected(),true)) { return; }
         // The ACF save API may vary by version: runtime validation remains authoritative.
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        if (isset($_POST['acf_fields']) && is_array($_POST['acf_fields'])) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-            foreach (wp_unslash($_POST['acf_fields']) as $field) {
+        if (is_array(Registration::submitted('acf_fields'))) {
+            foreach (Registration::submitted('acf_fields') as $field) {
                 if (is_array($field) && !in_array($field['type'] ?? '',self::ALLOWED,true)) {
                     acf_add_validation_error('',__('This field type is not supported for FluentAuth registration.','apls-fluentauth-extensions'));
                     break;
@@ -102,10 +100,8 @@ final class ACF_Adapter {
             // Preserve non-sensitive ACF inputs after a failed native registration POST.
             // Never restore password-like or unrecognized values.
             $field_key = $field['key'];
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-            if (isset($_POST['acf']) && is_array($_POST['acf']) && array_key_exists($field_key, $_POST['acf'])) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-                $raw_value = wp_unslash($_POST['acf'][$field_key]);
+            if (Registration::registration_nonce_valid() && is_array(Registration::submitted('acf')) && array_key_exists($field_key, Registration::submitted('acf'))) {
+                $raw_value = Registration::submitted('acf')[$field_key];
                 if (is_scalar($raw_value) || is_array($raw_value)) {
                     $safe_value = self::normalize($field, $raw_value);
                     if (!is_wp_error($safe_value)) { $field['value'] = $safe_value; }
@@ -121,8 +117,9 @@ final class ACF_Adapter {
         Diagnostics::log('acf.capture_hook',['verification_step'=>!empty($data['_email_verification_token'])]);
         $errors=self::validate_groups(self::selected());
         if ($errors) { self::notify($errors); wp_send_json(['message'=>__('Registration is temporarily unavailable. Please contact the administrator.','apls-fluentauth-extensions')],503); }
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        $transaction=sanitize_text_field(wp_unslash((string)($_POST['apls_faext_transaction'] ?? '')));
+        if (empty($data['_email_verification_token']) && !Registration::registration_nonce_valid()) { wp_send_json(['message'=>__('Registration form expired. Reload and try again.','apls-fluentauth-extensions')],403); }
+        $submitted_transaction = Registration::submitted_text('apls_faext_transaction');
+        $transaction = $submitted_transaction ?? '';
         if (!preg_match('/^[a-f0-9]{64}$/',$transaction)) { wp_send_json(['message'=>__('Invalid registration session. Reload the form.','apls-fluentauth-extensions')],422); }
         $email=strtolower(sanitize_email($data['email'] ?? ''));
         if (!$email) { return; }
@@ -130,8 +127,7 @@ final class ACF_Adapter {
             if (!Pending_Registrations::valid($transaction,$email,self::schema_hash())) { wp_send_json(['message'=>__('Registration session expired. Start again.','apls-fluentauth-extensions')],422); }
             return;
         }
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        $raw=isset($_POST['acf']) && is_array($_POST['acf']) ? wp_unslash($_POST['acf']) : [];
+        $raw=is_array(Registration::submitted('acf')) ? Registration::submitted('acf') : [];
         $validated=[];
         if (array_diff(array_keys($raw),array_keys(self::fields()))) { wp_send_json(['message'=>__('Unexpected registration field.','apls-fluentauth-extensions')],422); }
         foreach (self::fields() as $key=>$field) {
@@ -155,8 +151,9 @@ final class ACF_Adapter {
             $errors->add('apls_acf_schema',__('Registration is temporarily unavailable. Please contact the site administrator.','apls-fluentauth-extensions'));
             return;
         }
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        $transaction=isset($_POST['apls_faext_transaction']) ? sanitize_text_field(wp_unslash((string)$_POST['apls_faext_transaction'])) : '';
+        if (!$second && !Registration::registration_nonce_valid()) { $errors->add('apls_acf_nonce',__('Registration form expired. Reload and try again.','apls-fluentauth-extensions')); return; }
+        $submitted_transaction = Registration::submitted_text('apls_faext_transaction');
+        $transaction = $submitted_transaction ?? '';
         if (!preg_match('/^[a-f0-9]{64}$/',$transaction)) {
             $errors->add('apls_acf_transaction',__('Registration session missing. Reload the registration page.','apls-fluentauth-extensions'));
             return;
@@ -168,8 +165,7 @@ final class ACF_Adapter {
             }
             return;
         }
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        $raw=isset($_POST['acf']) && is_array($_POST['acf']) ? wp_unslash($_POST['acf']) : [];
+        $raw=is_array(Registration::submitted('acf')) ? Registration::submitted('acf') : [];
         $payload=[];
         if (array_diff(array_keys($raw),array_keys(self::fields()))) {
             $errors->add('apls_acf_unknown',__('Unexpected registration field.','apls-fluentauth-extensions'));
@@ -197,8 +193,7 @@ final class ACF_Adapter {
     }
     public static function validate_native_second_step($username,$email,$errors): void {
         if (!self::selected() || !($errors instanceof \WP_Error) || $errors->has_errors() || !did_action('login_init')) { return; }
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        if (empty($_POST['_email_verification_hash'])) { return; }
+        if (Registration::submitted_text('_email_verification_hash') === null) { return; }
         self::capture_native($errors,(string)$email,true);
     }
     private static function normalize(array $field,$value) {
@@ -296,12 +291,10 @@ final class ACF_Adapter {
         return $value;
     }
     public static function persist($user_id,$data): void {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        Diagnostics::log('acf.persist_hook',['acf_enabled'=>(bool)self::selected(),'transaction_present'=>!empty($_POST['apls_faext_transaction'])]);
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        if (!self::selected() || empty($_POST['apls_faext_transaction'])) { return; }
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        $transaction=sanitize_text_field(wp_unslash((string)$_POST['apls_faext_transaction']));
+        Diagnostics::log('acf.persist_hook',['acf_enabled'=>(bool)self::selected(),'transaction_present'=>Registration::submitted_text('apls_faext_transaction') !== null]);
+        if (!self::selected() || Registration::submitted_text('apls_faext_transaction') === null) { return; }
+        $submitted_transaction = Registration::submitted_text('apls_faext_transaction');
+        $transaction = $submitted_transaction ?? '';
         // FluentAuth's final action uses user_email rather than email. Trust the
         // WordPress user created by FluentAuth as the canonical identity source.
         $user = get_userdata(absint($user_id));

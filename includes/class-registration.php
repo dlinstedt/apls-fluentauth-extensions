@@ -3,6 +3,33 @@ namespace APLS\FluentAuthExtensions;
 if (!defined('ABSPATH')) { exit; }
 final class Registration {
     private static bool $completed=false;
+    /**
+     * A single boundary for submitted registration values. This does not grant
+     * authorization: first-stage handlers MUST call registration_nonce_valid()
+     * before using input. Verification-stage handlers validate FluentAuth's
+     * verified token and our HMAC-bound pending transaction instead.
+     *
+     * @return string|array|null Unslashed data, not yet field-type normalized.
+     */
+    public static function submitted(string $name) {
+        $allowed = ['apls_faext_registration_nonce', 'apls_faext_transaction', 'apls_faext_marketing', 'acf', 'acf_fields', '_email_verification_hash', 'user_email', 'user_login', 'email', '_fls_signup_nonce'];
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Presence check only, not authorization; the call site verifies the first-stage nonce before storing data. The verified-code stage uses FluentAuth and the HMAC-bound transaction.
+        if (!in_array($name, $allowed, true) || !isset($_POST[$name])) { return null; }
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Intentional raw, unslashed boundary for ACF scalar/array values. Do not flatten/sanitize here: typed callers validate, sanitize, and enforce nonce or verified-code transaction BEFORE any persistence.
+        $raw = wp_unslash($_POST[$name]);
+        return is_string($raw) || is_array($raw) ? $raw : null;
+    }
+    /** Return only a normalized scalar for known registration controls. */
+    public static function submitted_text(string $name): ?string {
+        $value = self::submitted($name);
+        return is_string($value) ? sanitize_text_field($value) : null;
+    }
+    /** Nonce guards our initial write; does not replace verification-code checks. */
+    public static function registration_nonce_valid(): bool {
+        $nonce = self::submitted_text('apls_faext_registration_nonce');
+        return $nonce !== null && wp_verify_nonce($nonce, 'apls_faext_register') !== false;
+    }
+
     private static array $contexts=[];
     public static function pending_context(int $user_id): ?array { return self::$contexts[$user_id] ?? null; }
     public static function register(): void {
@@ -32,28 +59,25 @@ final class Registration {
     public static function validate_native($username, $email, $errors): void {
         if (!($errors instanceof \WP_Error) || $errors->has_errors() || empty(Plugin::options()['server'])) { return; }
         // Only apply to an actual WordPress registration request, never arbitrary register_post calls.
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        if (!isset($_POST['user_email']) && !isset($_POST['user_login'])) { return; }
+        if (self::submitted_text('user_email') === null && self::submitted_text('user_login') === null) { return; }
         $r=Email_Validator::validate(sanitize_email($email));
         if (!$r['allowed']) { $errors->add('apls_faext_email', $r['message']); }
     }
     /** Insert registration extras during the native WordPress register_form action. */
     public static function native_fields(): void {
         $o = Plugin::options();
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        $token = isset($_POST['apls_faext_transaction']) ? sanitize_text_field(wp_unslash((string) $_POST['apls_faext_transaction'])) : '';
+        $submitted_token = self::submitted_text('apls_faext_transaction');
+        $token = $submitted_token ?? '';
         if (!preg_match('/^[a-f0-9]{64}$/', $token)) { $token = bin2hex(random_bytes(32)); }
         if (ACF_Adapter::selected()) {
+            wp_nonce_field('apls_faext_register', 'apls_faext_registration_nonce', false);
             printf('<input type="hidden" name="apls_faext_transaction" value="%s" />', esc_attr($token));
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-            if (empty($_POST['_email_verification_hash'])) {
+            if (self::submitted_text('_email_verification_hash') === null) {
                 echo ACF_Adapter::render_registration_fields(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- ACF generates escaped field markup.
             }
         }
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        if (Settings::marketing_enabled($o) && empty($_POST['_email_verification_hash'])) {
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-            $checked = isset($_POST['apls_faext_marketing']) && 'yes' === sanitize_text_field(wp_unslash((string) $_POST['apls_faext_marketing']));
+        if (Settings::marketing_enabled($o) && self::submitted_text('_email_verification_hash') === null) {
+            $checked = self::submitted_text('apls_faext_marketing') === 'yes';
             echo '<p class="apls-faext-native-consent"><label><input type="checkbox" name="apls_faext_marketing" value="yes" ' . checked($checked, true, false) . ' /><span class="apls-faext-consent-text">' . esc_html($o['marketing_text']) . '</span></label></p>';
         }
         Diagnostics::log('registration.native_fields_rendered', ['acf_enabled' => (bool) ACF_Adapter::selected(), 'marketing' => Settings::marketing_enabled($o)]);
@@ -76,7 +100,7 @@ final class Registration {
             ? '<label class="apls-faext-consent"><input type="checkbox" name="apls_faext_marketing" value="yes" /><span class="apls-faext-consent-text">' . esc_html($o['marketing_text']) . '</span></label>'
             : '';
         $transaction_html = ACF_Adapter::selected()
-            ? '<input type="hidden" name="apls_faext_transaction" value="' . esc_attr(bin2hex(random_bytes(32))) . '" />'
+            ? wp_nonce_field('apls_faext_register', 'apls_faext_registration_nonce', false, false) . '<input type="hidden" name="apls_faext_transaction" value="' . esc_attr(bin2hex(random_bytes(32))) . '" />'
             : '';
         $previous = libxml_use_internal_errors(true);
         try {
@@ -118,8 +142,7 @@ final class Registration {
     public static function native_registration_errors($errors,$username,$email) {
         if (!($errors instanceof \WP_Error) || $errors->has_errors() || !ACF_Adapter::selected()) { return $errors; }
         // The first native POST is inspected before FluentAuth sends its code.
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        if (empty($_POST['_email_verification_hash'])) {
+        if (self::submitted_text('_email_verification_hash') === null) {
             ACF_Adapter::capture_native($errors,(string)$email,false);
         }
         return $errors;
@@ -139,8 +162,8 @@ final class Registration {
         }
         // FluentAuth can use a dedicated /login/ route instead of a shortcode page.
         // Restrict this fallback to the site's login path rather than enqueuing globally.
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only path inspection; path compared to the configured login route.
-        $request_path=(string)wp_parse_url(wp_unslash($_SERVER['REQUEST_URI'] ?? ''),PHP_URL_PATH);
+        $request_uri = isset($_SERVER['REQUEST_URI']) && is_string($_SERVER['REQUEST_URI']) ? esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'])) : '';
+        $request_path=(string)wp_parse_url($request_uri,PHP_URL_PATH);
         $site_login=(string)wp_parse_url(home_url('/login/'),PHP_URL_PATH);
         $request_path=untrailingslashit($request_path);
         $site_login=untrailingslashit($site_login);
@@ -161,13 +184,11 @@ final class Registration {
     public static function ajax_validate(): void {
         if (!check_ajax_referer('apls_faext_email','nonce',false)) { wp_send_json_error(['message'=>__('Request expired.', 'apls-fluentauth-extensions')],403); }
         if (empty(Plugin::options()['live'])) { wp_send_json_error(['message'=>__('Live validation is disabled.', 'apls-fluentauth-extensions')],403); }
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        $raw_email=isset($_POST['email']) ? wp_unslash($_POST['email']) : '';
+        $raw_email=self::submitted('email') ?? '';
         if (!is_string($raw_email) || strlen($raw_email)>254) { wp_send_json_error(['message'=>__('Invalid email address.','apls-fluentauth-extensions')],422); }
         $email=sanitize_email($raw_email);
         if (!is_email($email)) { wp_send_json_error(['message'=>__('Enter a valid email address.', 'apls-fluentauth-extensions')],422); }
         // Limit anonymous validation credits per source network within a rolling window.
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Read-only path inspection; path compared to the configured login route.
         $ip=sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
         $limit='apls_faext_rate_'.hash_hmac('sha256',$ip,wp_salt('nonce'));
         $count=(int)get_transient($limit);
@@ -182,13 +203,10 @@ final class Registration {
         if (!$user_id || self::$completed || get_user_meta($user_id,'_apls_faext_completed',true)) { return; }
         self::$completed=true;
         $o=Plugin::options();
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        $is_shortcode=isset($_POST['_fls_signup_nonce']);
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        $is_native=!$is_shortcode && isset($_POST['user_email']) && did_action('login_init');
+        $is_shortcode=self::submitted_text('_fls_signup_nonce') !== null;
+        $is_native=!$is_shortcode && self::submitted_text('user_email') !== null && did_action('login_init');
         // Missing checkbox is a refusal, not permission. Social registrants are not auto-subscribed.
-        // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Registration is processed by FluentAuth; ACF values are validated and normalized by this adapter.
-        $consent=($is_shortcode || $is_native) && Settings::marketing_enabled($o) && isset($_POST['apls_faext_marketing']) && 'yes'===sanitize_text_field(wp_unslash($_POST['apls_faext_marketing']));
+        $consent=($is_shortcode || $is_native) && Settings::marketing_enabled($o) && self::submitted_text('apls_faext_marketing') === 'yes';
         $context=['source'=>$is_shortcode?'fluentauth_shortcode':($is_native?'fluentauth_native':'fluentauth_other'),'marketing_consent'=>$consent,'consent_text'=>$consent?$o['marketing_text']:''];
         if ($consent) { update_user_meta($user_id,'_apls_faext_marketing_consent_at',gmdate('Y-m-d H:i:s')); do_action('apls/fluentauth/consent_recorded',$user_id,$context); }
         self::$contexts[$user_id] = $context;

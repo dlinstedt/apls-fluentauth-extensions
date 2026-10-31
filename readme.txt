@@ -4,7 +4,7 @@ Tags: fluentauth, registration, acf, fluentcrm, email-validation
 Requires at least: 6.5
 Requires PHP: 8.2
 Tested up to: 7.1
-Stable tag: 1.0.26
+Stable tag: 1.0.29
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,7 +101,7 @@ When enabled, validation may request the external ZeroBounce HTTPS API using set
 
 == Changelog ==
 
-= 1.0.26 =
+= 1.0.29 =
 * WordPress.org compatibility: literal translation domain, translated placeholder comments, safe SQL identifier placeholders, and removal of custom update URI. No changes to registration behavior.
 
 = 1.0.24 =
@@ -122,5 +122,5 @@ When enabled, validation may request the external ZeroBounce HTTPS API using set
 
 == Upgrade Notice ==
 
-= 1.0.26 =
+= 1.0.29 =
 WordPress.org compatibility release. Registration and integration behavior remain unchanged.

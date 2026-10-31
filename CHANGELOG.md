@@ -1,9 +1,20 @@
-## 1.0.26 - Plugin Check compliance
+## 1.0.29 - Centralized request boundary documentation
+- Scoped PHPCS exceptions to the two deliberate raw-read operations. No validation or registration behavior was changed.
+- Retained field-specific validation and stage-specific nonce/verified transaction checks.
+
+## 1.0.29 - Centralized registration input boundary
+
+- Centralized registration POST retrieval into allowlisted input accessor and scalar sanitizer.
+- Initial registration ACF writes continue to require a verified nonce; verification-stage reads continue to require FluentAuth verification and HMAC-bound pending transaction.
+- Replaced scattered direct POST reads in registration/ACF adapters.
+- The bundled regression tests pass; live WordPress Plugin Check and registration regression remain required.
+
+## 1.0.29 - Plugin Check compliance
 - Migrated diagnostics to WP_Filesystem; documented best-effort non-atomic logging.
 - Clarified scanner suppressions for FluentAuth-controlled registration lifecycle and dedicated pending table.
 - Updated documentation metadata.
 
-## 1.0.26 - WordPress.org compliance
+## 1.0.29 - WordPress.org compliance
 
 - Removed custom Update URI header.
 - Corrected translation domain and added translator comments.
@@ -133,3 +144,8 @@
 
 ### Documentation preparation (no runtime version change)
 - Replaced obsolete README and readme.txt instructions; added dependency matrix, full tab setup, consent semantics, screenshot manifest, source-grounded hook contracts and release-readiness/security review.
+
+## 1.0.29 - Registration trust boundary review
+- Added plugin-owned CSRF nonce to initial native and shortcode ACF registration submissions.
+- Verify initial request nonce before temporary ACF payload storage; keep email-code verification and transaction binding as separate controls.
+- Removed broad suppressions for registration data handling pending fresh PHPCS review.

@@ -1,6 +1,6 @@
 # FluentAuth Registration Extensions
 
-**Publisher:** [APlusPlugins](https://aplusplugins.com) | **Version:** 1.0.26 | **License:** GPL-2.0-or-later | **WordPress.org contributor:** `dlinstedt`
+**Publisher:** [APlusPlugins](https://aplusplugins.com) | **Version:** 1.0.29 | **License:** GPL-2.0-or-later | **WordPress.org contributor:** `dlinstedt`
 
 Extends **FluentAuth (Fluent Security)** registration with independent marketing consent, optionally selected Advanced Custom Fields (ACF) user fields, email-address quality checks, and an optional CRM adapter. FluentAuth remains the authority for account creation, password handling, email-code verification, and login. The extension does **not** replace FluentAuth, create its own login system, or require a CRM to operate.
 
@@ -133,7 +133,7 @@ On GitHub, images are referenced from `assets/screenshots/`. For WordPress.org p
 
 - [Developer hook contracts and examples](docs/DEVELOPER-HOOKS.md)
 - [Release readiness and security review](docs/RELEASE-READINESS.md)
-- [Current release qualification status](docs/RELEASE-STATUS-1.0.26.md)
+- [Current release qualification status](docs/RELEASE-STATUS-1.0.29.md)
 - [Changelog](CHANGELOG.md)
 - [Official WPFusion ACF integration](https://wpfusion.com/documentation/integrations/advanced-custom-fields/)
 - [Official FluentCommunity FluentCRM tag access](https://docs.fluentcommunity.co/managing-access-with-fluentcrm-tags)
@@ -189,3 +189,7 @@ The 11 screenshots are uploaded separately to [`assets/screenshots/`](assets/scr
 
 
 WordPress.org compatibility notes: see [Plugin Check remediation](docs/PLUGIN-CHECK-REMEDIATION.md).
+
+### v1.0.29 security input boundary
+
+See [security input-boundary notes](docs/SECURITY-BOUNDARY-1.0.29.md). Staging verification is required before release.
