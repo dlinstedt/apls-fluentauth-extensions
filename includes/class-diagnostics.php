@@ -1,6 +1,6 @@
 <?php
 /** Privacy-minimized, administrator-controlled registration diagnostics. */
-namespace APLS\FluentAuthExtensions;
+namespace APlusPlugins\FluentAuthExtensions;
 if (!defined('ABSPATH')) { exit; }
 final class Diagnostics {
     private const MAX_SIZE = 2097152;
