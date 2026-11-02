@@ -30,12 +30,12 @@ $destinations = [
 $total=0;$failed=0;
 foreach ($destinations as [$candidate,$expected]) {
     $total++;
-    $actual = \APLS\FluentAuthExtensions\Community_Redirect::sanitize_destination($candidate);
+    $actual = \APlusPlugins\FluentAuthExtensions\Community_Redirect::sanitize_destination($candidate);
     if (($actual !== '') !== $expected) { $failed++; fwrite(STDERR, "destination #$total failed\n"); }
 }
 
-foreach($redirects as [$method,$path,$query,$expected]){$total++;$actual=\APLS\FluentAuthExtensions\Community_Redirect::destination($method,$path,$query);if($actual!==$expected){$failed++;fwrite(STDERR,"redirect #$total failed\n");}}
-$normalize=new ReflectionMethod(\APLS\FluentAuthExtensions\ACF_Adapter::class,'normalize');
+foreach($redirects as [$method,$path,$query,$expected]){$total++;$actual=\APlusPlugins\FluentAuthExtensions\Community_Redirect::destination($method,$path,$query);if($actual!==$expected){$failed++;fwrite(STDERR,"redirect #$total failed\n");}}
+$normalize=new ReflectionMethod(\APlusPlugins\FluentAuthExtensions\ACF_Adapter::class,'normalize');
 $fields=[
  [['type'=>'select','choices'=>['a'=>'A','b'=>'B'],'multiple'=>0],'a',true],
  [['type'=>'select','choices'=>['a'=>'A'],'multiple'=>0],['a'],false],
