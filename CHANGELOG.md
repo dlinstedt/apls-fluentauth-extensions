@@ -1,3 +1,8 @@
+## 1.0.30 - APlusPlugins publisher identity
+- Changed plugin display name, primary filename, PHP namespace, and text domain to APlusPlugins branding.
+- Retained existing stored settings, user metadata, database table names, API routes, JavaScript identifiers, and public integration hooks for backward compatibility.
+- No intended changes to registration behavior.
+
 ## 1.0.29 - Centralized request boundary documentation
 - Scoped PHPCS exceptions to the two deliberate raw-read operations. No validation or registration behavior was changed.
 - Retained field-specific validation and stage-specific nonce/verified transaction checks.
