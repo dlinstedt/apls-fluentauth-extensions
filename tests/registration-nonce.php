@@ -13,7 +13,7 @@ $cases=[
 ];
 foreach ($cases as [$name,$post,$expected]) {
     $_POST=$post;
-    if (\APLS\FluentAuthExtensions\Registration::registration_nonce_valid()!==$expected) {
+    if (\APlusPlugins\FluentAuthExtensions\Registration::registration_nonce_valid()!==$expected) {
         fwrite(STDERR,"FAIL: $name\n"); exit(1);
     }
 }
