@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: FluentAuth Registration Extensions
+ * Plugin Name: APlusPlugins Registration Extensions for FluentAuth
  * Plugin URI: https://aplusplugins.com/
  * Description: Extensible FluentAuth registration validation, optional consent and CRM synchronization.
  * Version: 1.0.30
