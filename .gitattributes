@@ -1,0 +1,29 @@
+# Internal developer documentation
+docs/ export-ignore
+installation.md export-ignore
+release-readiness.md export-ignore
+developer-hooks.md export-ignore
+
+# Ignore a specific directory and all its contents
+assets/screenshots/ export-ignore
+
+# Ignore specific file types anywhere in the repo
+*.png export-ignore
+*.jpg export-ignore
+
+# Repository metadata & source control files
+.github/ export-ignore
+.gitignore export-ignore
+.gitattributes export-ignore
+CHANGELOG.md export-ignore
+README.md export-ignore
+tests-readme.txt export-ignore
+
+# Build tool configs / tests (if applicable)
+package.json export-ignore
+package-lock.json export-ignore
+composer.json export-ignore
+composer.lock export-ignore
+phpunit.xml export-ignore
+tests/ export-ignore
+node_modules/ export-ignore
