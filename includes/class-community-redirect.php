@@ -1,6 +1,6 @@
 <?php
 /** Optional, narrowly scoped FluentCommunity auth entry-point compatibility. */
-namespace APLS\FluentAuthExtensions;
+namespace APlusPlugins\FluentAuthExtensions;
 if (!defined('ABSPATH')) { exit; }
 final class Community_Redirect {
     public static function register(): void {
