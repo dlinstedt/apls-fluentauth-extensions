@@ -1,3 +1,7 @@
+## 1.0.30 - WordPress.org slug alignment
+- Updated the plugin entry-point and text domain to `aplusplg-fluentauth-extensions` for publisher-prefix review.
+- Preserved the PHP namespace, stored options, database tables, REST endpoints, and public integration hooks.
+
 ## 1.0.30 - APlusPlugins publisher identity and compliant display name
 - Changed plugin display name to APlusPlugins Registration Extensions for FluentAuth; renamed primary filename, PHP namespace, and text domain to APlusPlugins branding.
 - Retained existing stored settings, user metadata, database table names, API routes, JavaScript identifiers, and public integration hooks for backward compatibility.
