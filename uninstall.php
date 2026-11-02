@@ -2,7 +2,7 @@
 /**
  * Uninstall APlusPlugins FluentAuth Registration Extensions.
  *
- * @package APLS\FluentAuthExtensions
+ * @package APlusPlugins\FluentAuthExtensions
  */
 if (!defined('WP_UNINSTALL_PLUGIN')) { exit; }
 
