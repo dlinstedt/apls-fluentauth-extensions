@@ -1,5 +1,5 @@
-## 1.0.30 - APlusPlugins publisher identity
-- Changed plugin display name, primary filename, PHP namespace, and text domain to APlusPlugins branding.
+## 1.0.30 - APlusPlugins publisher identity and compliant display name
+- Changed plugin display name to APlusPlugins Registration Extensions for FluentAuth; renamed primary filename, PHP namespace, and text domain to APlusPlugins branding.
 - Retained existing stored settings, user metadata, database table names, API routes, JavaScript identifiers, and public integration hooks for backward compatibility.
 - No intended changes to registration behavior.
 
