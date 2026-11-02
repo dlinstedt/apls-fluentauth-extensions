@@ -1,0 +1,501 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: APlusPlugins FluentAuth Extensions 1.0.18\n"
+"Report-Msgid-Bugs-To: https://aplusplugins.com/\n"
+"POT-Creation-Date: 2026-10-30 00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: aplusplugins-fluentauth-extensions\n"
+
+#: includes/class-settings.php:89
+msgid "A runtime configuration failure blocks registration and sends a deduplicated administrator email."
+msgstr ""
+
+#: includes/class-settings.php:78
+msgid "ACF Fields"
+msgstr ""
+
+#: includes/class-acf.php:19
+msgid "ACF group %s cannot be found."
+msgstr ""
+
+#: includes/class-acf.php:15
+msgid "ACF is not active."
+msgstr ""
+
+#: includes/class-settings.php:83
+msgid "ACF registration fields"
+msgstr ""
+
+#: includes/class-plugin.php:19
+msgid "APlusPlugins FluentAuth Extensions requires the active FluentAuth (Fluent Security) plugin."
+msgstr ""
+
+#: includes/class-cleanup.php:18
+msgid "APlusPlugins pending registration cleanup"
+msgstr ""
+
+#: includes/class-settings.php:108
+msgid "APlusPlugins will not run a CRM adapter. Third-party plugins may still respond to WordPress user creation."
+msgstr ""
+
+#: includes/class-settings.php:85
+msgid "Activate ACF to enable registration fields."
+msgstr ""
+
+#: includes/class-settings.php:102
+msgid "Apply additional tags only when marketing opt-in is checked"
+msgstr ""
+
+#: includes/class-settings.php:101
+msgid "Apply tags on every completed registration"
+msgstr ""
+
+#: includes/class-settings.php:117
+msgid "Block and retry"
+msgstr ""
+
+#: includes/class-settings.php:78
+#: includes/class-settings.php:90
+msgid "CRM Integration"
+msgstr ""
+
+#: includes/class-settings.php:106
+msgid "Check WPFusion General Settings > Create Contacts. Its global registration synchronization continues regardless of the selector above. Consent does not authorize resubscribing an existing unsubscribed contact."
+msgstr ""
+
+#: includes/class-registration.php:42
+msgid "Checking email address..."
+msgstr ""
+
+#: includes/class-settings.php:90
+msgid "Choose one CRM integration. WPFusion can still synchronize users independently: review its own settings to avoid duplicate contact processing."
+msgstr ""
+
+#: includes/class-settings.php:125
+msgid "Choose what happens when the plugin is deleted from WordPress. Deactivation preserves settings and user metadata. Temporary table removal is configurable."
+msgstr ""
+
+#: includes/class-settings.php:75
+msgid "Configure registration consent, integrations, and developer extension points."
+msgstr ""
+
+#: includes/class-settings.php:82
+msgid "Consent is optional and unchecked by default. FluentAuth signup email verification remains enforced."
+msgstr ""
+
+#: includes/class-settings.php:117
+msgid "Continue to FluentAuth email verification"
+msgstr ""
+
+#: includes/class-settings.php:112
+msgid "Custom validation via filter"
+msgstr ""
+
+#: includes/class-settings.php:128
+msgid "Default: every 24 hours, scheduled near midnight in the WordPress site timezone. WP-Cron runs when site traffic triggers it, so midnight is approximate."
+msgstr ""
+
+#: includes/class-settings.php:131
+msgid "Delete APlusPlugins extension settings when uninstalled"
+msgstr ""
+
+#: includes/class-settings.php:126
+msgid "Delete expired pending registration records every"
+msgstr ""
+
+#: includes/class-settings.php:132
+msgid "Delete only APlusPlugins registration markers and marketing-consent user metadata when uninstalled"
+msgstr ""
+
+#: includes/class-settings.php:78
+msgid "Developer Hooks"
+msgstr ""
+
+#: includes/class-settings.php:124
+msgid "Developer extension points"
+msgstr ""
+
+#: includes/class-settings.php:92
+msgid "Developer hooks only"
+msgstr ""
+
+#: includes/class-email-validator.php:42
+msgid "Did you mean %s?"
+msgstr ""
+
+#: includes/class-settings.php:92
+#: includes/class-settings.php:121
+msgid "Direct FluentCRM"
+msgstr ""
+
+#: includes/class-settings.php:96
+msgid "Direct FluentCRM requires installing or activating FluentCRM."
+msgstr ""
+
+#: includes/class-settings.php:92
+msgid "Disabled"
+msgstr ""
+
+#: includes/class-settings.php:130
+msgid "Drop the temporary pending-registration table on permanent uninstall"
+msgstr ""
+
+#: includes/class-settings.php:129
+msgid "Drop the temporary pending-registration table on plugin deactivation (destructive)"
+msgstr ""
+
+#: includes/class-settings.php:78
+msgid "Email Validation"
+msgstr ""
+
+#: includes/class-settings.php:109
+msgid "Email validation"
+msgstr ""
+
+#: includes/class-email-validator.php:7
+msgid "Email validation temporarily unavailable. Please try again."
+msgstr ""
+
+#: includes/class-email-validator.php:22
+msgid "Email verification service is temporarily unavailable."
+msgstr ""
+
+#: includes/class-settings.php:114
+msgid "Enable live email validation on FluentAuth shortcode registration"
+msgstr ""
+
+#: includes/class-settings.php:115
+msgid "Enforce validation on registration submission"
+msgstr ""
+
+#: includes/class-email-validator.php:8
+#: includes/class-registration.php:50
+msgid "Enter a valid email address."
+msgstr ""
+
+#: includes/class-settings.php:75
+msgid "FluentAuth Registration Extensions"
+msgstr ""
+
+#: includes/class-acf.php:78
+msgid "FluentAuth registration blocked: ACF configuration"
+msgstr ""
+
+#: includes/class-settings.php:78
+#: includes/class-settings.php:119
+msgid "FluentCommunity"
+msgstr ""
+
+#: includes/class-settings.php:73
+msgid "Insufficient permissions."
+msgstr ""
+
+#: includes/class-acf.php:130
+msgid "Invalid URL field."
+msgstr ""
+
+#: includes/class-acf.php:137
+msgid "Invalid date or time format."
+msgstr ""
+
+#: includes/class-acf.php:129
+msgid "Invalid email field."
+msgstr ""
+
+#: includes/class-acf.php:127
+msgid "Invalid field choice."
+msgstr ""
+
+#: includes/class-acf.php:112
+#: includes/class-acf.php:122
+msgid "Invalid field value."
+msgstr ""
+
+#: includes/class-acf.php:131
+msgid "Invalid number field."
+msgstr ""
+
+#: includes/class-acf.php:99
+msgid "Invalid registration session. Reload the form."
+msgstr ""
+
+#: includes/class-email-validator.php:15
+msgid "Invalid validation provider response."
+msgstr ""
+
+#: includes/class-registration.php:48
+msgid "Live validation is disabled."
+msgstr ""
+
+#: includes/class-settings.php:103
+msgid "Manage lists through FluentCRM automations triggered by tags. Marketing consent does not override an existing unsubscribe."
+msgstr ""
+
+#: includes/class-settings.php:78
+msgid "Marketing Checkbox"
+msgstr ""
+
+#: includes/class-settings.php:79
+msgid "Marketing checkbox"
+msgstr ""
+
+#: includes/class-acf.php:26
+msgid "Missing or repeated ACF field name: %s."
+msgstr ""
+
+#: includes/class-settings.php:107
+msgid "No built-in CRM synchronization runs. Subscribe to apls/fluentauth/registration_completed and apls/fluentauth/consent_recorded for custom integrations."
+msgstr ""
+
+#: includes/class-settings.php:68
+msgid "No matching tags"
+msgstr ""
+
+#: includes/class-settings.php:112
+msgid "None"
+msgstr ""
+
+#: includes/class-settings.php:81
+msgid "Opt-in language"
+msgstr ""
+
+#: includes/class-settings.php:79
+msgid "Optional marketing consent, independent of account registration."
+msgstr ""
+
+#: includes/class-acf.php:146
+msgid "Pending registration field data was not found after user creation."
+msgstr ""
+
+#: includes/class-registration.php:42
+msgid "Please correct your email address."
+msgstr ""
+
+#: includes/class-email-validator.php:41
+msgid "Please use a different email address."
+msgstr ""
+
+#: includes/class-settings.php:78
+msgid "Plugin Cleanup"
+msgstr ""
+
+#: includes/class-settings.php:125
+msgid "Plugin cleanup"
+msgstr ""
+
+#: includes/class-settings.php:116
+msgid "Provider unavailable / API error"
+msgstr ""
+
+#: includes/class-settings.php:15
+#: includes/class-settings.php:15
+msgid "Registration Extensions"
+msgstr ""
+
+#: includes/class-settings.php:77
+msgid "Registration extension settings"
+msgstr ""
+
+#: includes/class-settings.php:86
+msgid "Registration field groups"
+msgstr ""
+
+#: includes/class-acf.php:84
+msgid "Registration is temporarily unavailable due to a configuration issue. Please contact the site administrator."
+msgstr ""
+
+#: includes/class-acf.php:97
+msgid "Registration is temporarily unavailable. Please contact the administrator."
+msgstr ""
+
+#: includes/class-acf.php:103
+msgid "Registration session expired. Start again."
+msgstr ""
+
+#: includes/class-settings.php:69
+msgid "Remove tag"
+msgstr ""
+
+#: includes/class-acf.php:81
+#: includes/class-registration.php:47
+msgid "Request expired."
+msgstr ""
+
+#: includes/class-acf.php:110
+msgid "Required field is missing: %s"
+msgstr ""
+
+#: includes/class-settings.php:134
+msgid "Save settings"
+msgstr ""
+
+#: includes/class-settings.php:126
+msgid "Scheduled pending-data cleanup"
+msgstr ""
+
+#: includes/class-settings.php:67
+msgid "Search tags..."
+msgstr ""
+
+#: includes/class-settings.php:83
+msgid "Select ACF groups for FluentAuth registration. Values are stored in user meta after verification."
+msgstr ""
+
+#: includes/class-settings.php:80
+msgid "Show optional marketing opt-in checkbox"
+msgstr ""
+
+#: includes/class-settings.php:88
+msgid "Supported: text, textarea, number, email, URL, select, radio, checkbox, true/false, date, date-time, and time. Unsupported group definitions are rejected."
+msgstr ""
+
+#: includes/class-settings.php:100
+msgid "Synchronize completed registrations with FluentCRM"
+msgstr ""
+
+#: includes/class-settings.php:133
+msgid "These choices take effect only when you delete the plugin in WordPress. They do not delete WordPress users, FluentCRM contacts, tags, lists, ZeroBounce credentials, or FluentCommunity memberships. Review your legal retention requirements before deleting consent evidence."
+msgstr ""
+
+#: includes/class-acf.php:67
+msgid "This field type is not supported for FluentAuth registration."
+msgstr ""
+
+#: includes/class-settings.php:123
+msgid "To enable WPFusion Space integration, install or activate WPFusion and configure its CRM connection."
+msgstr ""
+
+#: includes/class-settings.php:110
+msgid "To enable ZeroBounce settings, install or activate the ZeroBounce WordPress plugin."
+msgstr ""
+
+#: includes/class-settings.php:120
+msgid "To enable community integration, install or activate FluentCommunity."
+msgstr ""
+
+#: includes/class-registration.php:55
+msgid "Too many requests. Please try again later."
+msgstr ""
+
+#: includes/class-settings.php:157
+msgid "Unable to list current CRM tags"
+msgstr ""
+
+#: includes/class-acf.php:117
+msgid "Unable to save registration fields. Try again."
+msgstr ""
+
+#: includes/class-acf.php:23
+msgid "Unsupported ACF field %1$s (%2$s) in group %3$s."
+msgstr ""
+
+#: includes/class-settings.php:121
+msgid "Use registration tags to trigger FluentCRM automations that add people to Spaces, or configure FluentCommunity tag-based Space access. Do not use marketing tags for access entitlements."
+msgstr ""
+
+#: includes/class-settings.php:109
+msgid "Use the existing ZeroBounce WordPress credentials and validation rules."
+msgstr ""
+
+#: includes/class-settings.php:111
+msgid "Validation provider"
+msgstr ""
+
+#: includes/class-settings.php:92
+#: includes/class-settings.php:122
+msgid "WPFusion"
+msgstr ""
+
+#: includes/class-settings.php:122
+msgid "WPFusion can link CRM tags to FluentCommunity Spaces for enrollment and removal. Configure the Linked Tag and access requirements in WPFusion and FluentCommunity; this extension never assigns Spaces directly."
+msgstr ""
+
+#: includes/class-settings.php:97
+msgid "WPFusion integration requires installing or activating WPFusion."
+msgstr ""
+
+#: includes/class-settings.php:98
+msgid "WPFusion is active. If Create Contacts is enabled in WPFusion, it may independently synchronize new users even when Direct FluentCRM is selected here. Disable WPFusion registration contact creation or choose WPFusion mode; APlusPlugins does not change third-party configuration."
+msgstr ""
+
+#: includes/class-settings.php:105
+msgid "WPFusion marketing opt-in tags"
+msgstr ""
+
+#: includes/class-settings.php:104
+msgid "WPFusion owns CRM contact creation and default registration tags. Configure those inside WPFusion. APlusPlugins bridges the affirmative marketing consent and applies only the selected marketing tags."
+msgstr ""
+
+#: includes/class-settings.php:112
+msgid "ZeroBounce WordPress settings"
+msgstr ""
+
+msgid "Select an existing ACF field group to display on the FluentAuth registration form. After email verification, field values are saved to the new WordPress user account as ACF user meta (wp_usermeta), not post meta or options."
+msgstr ""
+
+msgid "ACF location rules are not storage destinations."
+msgstr ""
+
+msgid "You do not need to use User Form = Register, User Role = All, or Logged In. APlusPlugins renders the selected field groups during FluentAuth registration and always saves their values to the newly verified user. Set ACF location rules for where you want the group to appear in normal WordPress/ACF screens; avoid broad rules if you do not want those fields displayed elsewhere."
+msgstr ""
+
+msgid "To enable registration fields, install or activate ACF or ACF Pro."
+msgstr ""
+
+msgid "No ACF field groups were found. Create and publish a field group in ACF, then return here to select it for FluentAuth registration."
+msgstr ""
+
+msgid "Supported: text, textarea, number, email, URL, select, radio, checkbox, true/false, date, date-time, and time. Unsupported field groups are rejected."
+msgstr ""
+
+msgid "CRM integration provider"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Invalid settings payload."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Settings successfully saved"
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Saving..."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Settings could not be saved. Please try again."
+msgstr ""
+
+#: includes/class-acf.php
+msgid "Registration is temporarily unavailable. Please contact the site administrator."
+msgstr ""
+
+#: includes/class-acf.php
+msgid "Registration session missing. Reload the registration page."
+msgstr ""
+
+#: includes/class-acf.php
+msgid "Registration session expired. Please restart registration."
+msgstr ""
+
+#: includes/class-acf.php
+msgid "Required field missing: %s"
+msgstr ""
+
+#: includes/class-acf.php
+msgid "Invalid registration field value."
+msgstr ""
+
+#: includes/class-acf.php
+msgid "Registration fields could not be stored. Please retry."
+msgstr ""
+
+#: includes/class-settings.php
+msgid "Direct FluentCRM: A new contact is created as Subscribed only when the marketing checkbox is checked. If left unchecked, a new contact is created as Transactional (operational messages only, no marketing campaigns). Existing contacts retain their established subscription or suppression status."
+msgstr ""
+
+msgid "Discover more WordPress extensions, developer resources, and our community at"
+msgstr ""
