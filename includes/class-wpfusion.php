@@ -1,5 +1,5 @@
 <?php
-namespace APLS\FluentAuthExtensions;
+namespace APlusPlugins\FluentAuthExtensions;
 if (!defined('ABSPATH')) { exit; }
 /** Consent bridge. WP Fusion owns contact creation and its regular registration tags. */
 final class WP_Fusion_Adapter {
