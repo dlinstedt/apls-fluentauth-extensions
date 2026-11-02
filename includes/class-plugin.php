@@ -1,5 +1,5 @@
 <?php
-namespace APLS\FluentAuthExtensions;
+namespace APlusPlugins\FluentAuthExtensions;
 if (!defined('ABSPATH')) { exit; }
 require_once __DIR__ . '/class-diagnostics.php';
 require_once __DIR__ . '/class-settings.php';
@@ -18,7 +18,7 @@ final class Plugin {
         self::$booted = true;
         if (!defined('FLUENT_SECURITY_VERSION') && !class_exists('FluentAuth\App\Services\AuthService')) {
             add_action('admin_notices', static function (): void {
-                if (current_user_can('activate_plugins')) { echo '<div class="notice notice-error"><p>' . esc_html__('APlusPlugins FluentAuth Extensions requires the active FluentAuth (Fluent Security) plugin.', 'apls-fluentauth-extensions') . '</p></div>'; }
+                if (current_user_can('activate_plugins')) { echo '<div class="notice notice-error"><p>' . esc_html__('APlusPlugins FluentAuth Extensions requires the active FluentAuth (Fluent Security) plugin.', 'aplusplugins-fluentauth-extensions') . '</p></div>'; }
             });
             return;
         }
