@@ -1,4 +1,4 @@
-=== APlusPlugins FluentAuth Registration Extensions ===
+=== APlusPlugins Registration Extensions for FluentAuth ===
 Contributors: dlinstedt
 Tags: fluentauth, registration, acf, fluentcrm, email-validation
 Requires at least: 6.5
@@ -12,7 +12,7 @@ Optional ACF signup fields, independent marketing consent, email validation and 
 
 == Description ==
 
-FluentAuth Registration Extensions augments FluentAuth (Fluent Security) registration without replacing login, passwords, verification or account creation. Works with native FluentAuth registration and supported signup shortcodes. You can use marketing consent without installing ACF, ZeroBounce, FluentCRM, WPFusion or FluentCommunity.
+APlusPlugins Registration Extensions for FluentAuth augments FluentAuth (Fluent Security) registration without replacing login, passwords, verification or account creation. Works with native FluentAuth registration and supported signup shortcodes. You can use marketing consent without installing ACF, ZeroBounce, FluentCRM, WPFusion or FluentCommunity.
 
 Features:
 * Optional, unchecked marketing-consent checkbox independent of Terms and Conditions and ACF.
@@ -31,7 +31,7 @@ Features:
 == Installation ==
 
 1. Install and activate FluentAuth (Fluent Security); configure its public registration and verification flow. We recommend enabling FluentAuth **Validate Email** / email ownership verification, even though this integration currently requests verification through a filter.
-2. Install/activate FluentAuth Registration Extensions. Find **FluentAuth > Registration Extensions**.
+2. Install/activate APlusPlugins Registration Extensions for FluentAuth. Find **FluentAuth > Registration Extensions**.
 3. **Marketing:** enable or disable independent marketing opt-in; adjust the consent text.
 4. **ACF Fields:** if using ACF or ACF Pro, create/publish compatible ACF Field Groups, select them here, and save. To display fields on **Users > Edit User**, also set the ACF group location to the appropriate User Form context.
 5. **CRM Integration:** select Direct FluentCRM, WPFusion, Developer hooks only, or Disabled. Do not configure competing CRM contact creators.
