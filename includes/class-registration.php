@@ -177,22 +177,22 @@ final class Registration {
         if (!Settings::marketing_enabled($o) && empty($o['live']) && !ACF_Adapter::selected() && !Diagnostics::enabled()) { return; }
         $js='assets/js/registration.js'; $css='assets/css/registration.css';
         wp_enqueue_script('apls-faext-registration',plugins_url($js,FILE),[],filemtime(dirname(FILE).'/'.$js),true);
-        wp_add_inline_script('apls-faext-registration','window.aplsFaext='.wp_json_encode(['ajaxUrl'=>admin_url('admin-ajax.php'),'nonce'=>wp_create_nonce('apls_faext_email'),'acf'=>(bool)ACF_Adapter::selected(),'debug'=>Diagnostics::enabled() && !empty($o['debug_console']),'live'=>(bool)$o['live'],'marketing'=>Settings::marketing_enabled($o),'language'=>$o['marketing_text'],'checking'=>__('Checking email address...', 'aplusplugins-fluentauth-extensions'),'bad'=>__('Please correct your email address.', 'aplusplugins-fluentauth-extensions')]).';','before');
+        wp_add_inline_script('apls-faext-registration','window.aplsFaext='.wp_json_encode(['ajaxUrl'=>admin_url('admin-ajax.php'),'nonce'=>wp_create_nonce('apls_faext_email'),'acf'=>(bool)ACF_Adapter::selected(),'debug'=>Diagnostics::enabled() && !empty($o['debug_console']),'live'=>(bool)$o['live'],'marketing'=>Settings::marketing_enabled($o),'language'=>$o['marketing_text'],'checking'=>__('Checking email address...', 'aplusplg-fluentauth-extensions'),'bad'=>__('Please correct your email address.', 'aplusplg-fluentauth-extensions')]).';','before');
         if (ACF_Adapter::active() && ACF_Adapter::selected() && function_exists('acf_enqueue_scripts')) { acf_enqueue_scripts(); }
         wp_enqueue_style('apls-faext-registration',plugins_url($css,FILE),[],filemtime(dirname(FILE).'/'.$css));
     }
     public static function ajax_validate(): void {
-        if (!check_ajax_referer('apls_faext_email','nonce',false)) { wp_send_json_error(['message'=>__('Request expired.', 'aplusplugins-fluentauth-extensions')],403); }
-        if (empty(Plugin::options()['live'])) { wp_send_json_error(['message'=>__('Live validation is disabled.', 'aplusplugins-fluentauth-extensions')],403); }
+        if (!check_ajax_referer('apls_faext_email','nonce',false)) { wp_send_json_error(['message'=>__('Request expired.', 'aplusplg-fluentauth-extensions')],403); }
+        if (empty(Plugin::options()['live'])) { wp_send_json_error(['message'=>__('Live validation is disabled.', 'aplusplg-fluentauth-extensions')],403); }
         $raw_email=self::submitted('email') ?? '';
-        if (!is_string($raw_email) || strlen($raw_email)>254) { wp_send_json_error(['message'=>__('Invalid email address.','aplusplugins-fluentauth-extensions')],422); }
+        if (!is_string($raw_email) || strlen($raw_email)>254) { wp_send_json_error(['message'=>__('Invalid email address.','aplusplg-fluentauth-extensions')],422); }
         $email=sanitize_email($raw_email);
-        if (!is_email($email)) { wp_send_json_error(['message'=>__('Enter a valid email address.', 'aplusplugins-fluentauth-extensions')],422); }
+        if (!is_email($email)) { wp_send_json_error(['message'=>__('Enter a valid email address.', 'aplusplg-fluentauth-extensions')],422); }
         // Limit anonymous validation credits per source network within a rolling window.
         $ip=sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? 'unknown'));
         $limit='apls_faext_rate_'.hash_hmac('sha256',$ip,wp_salt('nonce'));
         $count=(int)get_transient($limit);
-        if ($count>=15) { wp_send_json_error(['message'=>__('Too many requests. Please try again later.', 'aplusplugins-fluentauth-extensions')],429); }
+        if ($count>=15) { wp_send_json_error(['message'=>__('Too many requests. Please try again later.', 'aplusplg-fluentauth-extensions')],429); }
         set_transient($limit,$count+1, HOUR_IN_SECONDS);
         $r=Email_Validator::validate($email,'live');
         wp_send_json_success(['allowed'=>(bool)$r['allowed'],'message'=>$r['message']]);
