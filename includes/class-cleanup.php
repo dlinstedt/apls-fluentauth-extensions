@@ -1,6 +1,6 @@
 <?php
 /** Configurable WP-Cron cleanup of expired temporary registration payloads. */
-namespace APLS\FluentAuthExtensions;
+namespace APlusPlugins\FluentAuthExtensions;
 if (!defined('ABSPATH')) { exit; }
 final class Cleanup {
     private const HOOK='apls_faext_cleanup';
@@ -15,7 +15,7 @@ final class Cleanup {
     }
     public static function schedules(array $schedules): array {
         $options=Plugin::options();
-        $schedules['apls_faext_custom']=['interval'=>self::seconds($options),'display'=>__('APlusPlugins pending registration cleanup','apls-fluentauth-extensions')];
+        $schedules['apls_faext_custom']=['interval'=>self::seconds($options),'display'=>__('APlusPlugins pending registration cleanup','aplusplugins-fluentauth-extensions')];
         return $schedules;
     }
     private static function midnight(): int {
