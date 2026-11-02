@@ -1,5 +1,5 @@
 <?php
-namespace APLS\FluentAuthExtensions;
+namespace APlusPlugins\FluentAuthExtensions;
 if (!defined('ABSPATH')) { exit; }
 
 /** Direct FluentCRM adapter. APLS alone owns this provider's registration sync. */
