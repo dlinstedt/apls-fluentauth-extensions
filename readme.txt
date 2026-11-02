@@ -1,4 +1,4 @@
-=== APlusPlugins Registration Extensions for FluentAuth ===
+=== Registration Enhancements for FluentAuth ===
 Contributors: dlinstedt
 Tags: fluentauth, registration, acf, fluentcrm, email-validation
 Requires at least: 6.5
