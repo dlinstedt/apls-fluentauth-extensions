@@ -1,6 +1,6 @@
 <?php
 /** Temporary storage for verified-registration data. */
-namespace APLS\FluentAuthExtensions;
+namespace APlusPlugins\FluentAuthExtensions;
 if (!defined('ABSPATH')) { exit; }
 final class Pending_Registrations {
     public static function table(): string { global $wpdb; return $wpdb->prefix.'apls_faext_pending'; }
