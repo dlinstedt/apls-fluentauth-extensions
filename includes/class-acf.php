@@ -1,6 +1,6 @@
 <?php
 /** Optional ACF field integration. */
-namespace APLS\FluentAuthExtensions;
+namespace APlusPlugins\FluentAuthExtensions;
 if (!defined('ABSPATH')) { exit; }
 final class ACF_Adapter {
     private const ALLOWED = ['text','textarea','number','email','url','select','radio','checkbox','true_false','date_picker','date_time_picker','time_picker'];
@@ -12,30 +12,30 @@ final class ACF_Adapter {
     public static function selected(): array { return array_values(array_unique(array_filter(array_map('sanitize_text_field',(array)(Plugin::options()['acf_groups'] ?? []))))); }
     public static function validate_groups(array $ids): array {
         if (!$ids) { return []; }
-        if (!self::active()) { return [__('ACF is not active.', 'apls-fluentauth-extensions')]; }
+        if (!self::active()) { return [__('ACF is not active.', 'aplusplugins-fluentauth-extensions')]; }
         $errors=[]; $names=[];
         foreach ($ids as $id) {
             $group=acf_get_field_group($id);
             /* translators: Placeholder values identify the ACF field, group, or email validation detail. */
-            if (!$group || empty($group['key'])) { $errors[]=sprintf(__('ACF group %s cannot be found.', 'apls-fluentauth-extensions'),$id); continue; }
+            if (!$group || empty($group['key'])) { $errors[]=sprintf(__('ACF group %s cannot be found.', 'aplusplugins-fluentauth-extensions'),$id); continue; }
             foreach ((array)acf_get_fields($group) as $field) {
                 $type=$field['type'] ?? ''; $key=$field['key'] ?? '';
                 if (!in_array($type,self::ALLOWED,true)) {
                     /* translators: Placeholder values identify the ACF field, group, or email validation detail. */
-                    $errors[]=sprintf(__('Unsupported ACF field %1$s (%2$s) in group %3$s.', 'apls-fluentauth-extensions'),$field['label'] ?? $key,$type,$group['title'] ?? $id);
+                    $errors[]=sprintf(__('Unsupported ACF field %1$s (%2$s) in group %3$s.', 'aplusplugins-fluentauth-extensions'),$field['label'] ?? $key,$type,$group['title'] ?? $id);
                 }
                 if (empty($field['name']) || !$key || isset($names[$field['name']])) {
                     /* translators: Placeholder values identify the ACF field, group, or email validation detail. */
-                    $errors[]=sprintf(__('Missing or repeated ACF field name: %s.', 'apls-fluentauth-extensions'),$field['name'] ?? $key);
+                    $errors[]=sprintf(__('Missing or repeated ACF field name: %s.', 'aplusplugins-fluentauth-extensions'),$field['name'] ?? $key);
                 }
                 $names[$field['name'] ?? '']=$key;
                 if (!empty($field['conditional_logic'])) {
                     /* translators: Placeholder values identify the ACF field, group, or email validation detail. */
-                    $errors[]=sprintf(__('Conditional ACF field %s is not supported by the registration server validator.', 'apls-fluentauth-extensions'),$field['label'] ?? $key);
+                    $errors[]=sprintf(__('Conditional ACF field %s is not supported by the registration server validator.', 'aplusplugins-fluentauth-extensions'),$field['label'] ?? $key);
                 }
                 if (in_array($type,['radio','select','checkbox'],true) && (!empty($field['other_choice']) || !empty($field['save_other_choice']) || !empty($field['create_options']) || !empty($field['save_options']) || !empty($field['ajax']))) {
                     /* translators: Placeholder values identify the ACF field, group, or email validation detail. */
-                    $errors[]=sprintf(__('Dynamic or custom choices are not supported for registration field %s.', 'apls-fluentauth-extensions'),$field['label'] ?? $key);
+                    $errors[]=sprintf(__('Dynamic or custom choices are not supported for registration field %s.', 'aplusplugins-fluentauth-extensions'),$field['label'] ?? $key);
                 }
             }
         }
@@ -72,7 +72,7 @@ final class ACF_Adapter {
         if (is_array(Registration::submitted('acf_fields'))) {
             foreach (Registration::submitted('acf_fields') as $field) {
                 if (is_array($field) && !in_array($field['type'] ?? '',self::ALLOWED,true)) {
-                    acf_add_validation_error('',__('This field type is not supported for FluentAuth registration.','apls-fluentauth-extensions'));
+                    acf_add_validation_error('',__('This field type is not supported for FluentAuth registration.','aplusplugins-fluentauth-extensions'));
                     break;
                 }
             }
@@ -83,7 +83,7 @@ final class ACF_Adapter {
         $key='apls_faext_acf_alert_'.substr($fingerprint,0,24);
         if (get_transient($key)) { return; }
         set_transient($key,1,DAY_IN_SECONDS);
-        wp_mail(get_option('admin_email'),__('FluentAuth registration blocked: ACF configuration','apls-fluentauth-extensions'),sprintf("Site: %s\nConfigured field groups: %s\nErrors:\n%s\nReview FluentAuth > Registration Extensions > ACF Fields.",home_url('/'),implode(', ',self::selected()),implode("\n",$errors)));
+        wp_mail(get_option('admin_email'),__('FluentAuth registration blocked: ACF configuration','aplusplugins-fluentauth-extensions'),sprintf("Site: %s\nConfigured field groups: %s\nErrors:\n%s\nReview FluentAuth > Registration Extensions > ACF Fields.",home_url('/'),implode(', ',self::selected()),implode("\n",$errors)));
     }
     /** Server-side HTML. ACF renders field internals, but does not own the form. */
     public static function render_registration_fields(): string {
@@ -92,7 +92,7 @@ final class ACF_Adapter {
         if ($errors) {
             self::notify($errors);
             Diagnostics::log('acf.schema_failure', ['errors' => $errors]);
-            return '<div class="apls-faext-acf-message" role="alert">' . esc_html__('Registration is temporarily unavailable. Please contact the site administrator.', 'apls-fluentauth-extensions') . '</div>';
+            return '<div class="apls-faext-acf-message" role="alert">' . esc_html__('Registration is temporarily unavailable. Please contact the site administrator.', 'aplusplugins-fluentauth-extensions') . '</div>';
         }
         ob_start();
         echo '<div class="apls-faext-acf-host"><div class="apls-faext-acf-fields">';
@@ -116,31 +116,31 @@ final class ACF_Adapter {
         if (!self::selected()) { return; }
         Diagnostics::log('acf.capture_hook',['verification_step'=>!empty($data['_email_verification_token'])]);
         $errors=self::validate_groups(self::selected());
-        if ($errors) { self::notify($errors); wp_send_json(['message'=>__('Registration is temporarily unavailable. Please contact the administrator.','apls-fluentauth-extensions')],503); }
-        if (empty($data['_email_verification_token']) && !Registration::registration_nonce_valid()) { wp_send_json(['message'=>__('Registration form expired. Reload and try again.','apls-fluentauth-extensions')],403); }
+        if ($errors) { self::notify($errors); wp_send_json(['message'=>__('Registration is temporarily unavailable. Please contact the administrator.','aplusplugins-fluentauth-extensions')],503); }
+        if (empty($data['_email_verification_token']) && !Registration::registration_nonce_valid()) { wp_send_json(['message'=>__('Registration form expired. Reload and try again.','aplusplugins-fluentauth-extensions')],403); }
         $submitted_transaction = Registration::submitted_text('apls_faext_transaction');
         $transaction = $submitted_transaction ?? '';
-        if (!preg_match('/^[a-f0-9]{64}$/',$transaction)) { wp_send_json(['message'=>__('Invalid registration session. Reload the form.','apls-fluentauth-extensions')],422); }
+        if (!preg_match('/^[a-f0-9]{64}$/',$transaction)) { wp_send_json(['message'=>__('Invalid registration session. Reload the form.','aplusplugins-fluentauth-extensions')],422); }
         $email=strtolower(sanitize_email($data['email'] ?? ''));
         if (!$email) { return; }
         if (!empty($data['_email_verification_token'])) {
-            if (!Pending_Registrations::valid($transaction,$email,self::schema_hash())) { wp_send_json(['message'=>__('Registration session expired. Start again.','apls-fluentauth-extensions')],422); }
+            if (!Pending_Registrations::valid($transaction,$email,self::schema_hash())) { wp_send_json(['message'=>__('Registration session expired. Start again.','aplusplugins-fluentauth-extensions')],422); }
             return;
         }
         $raw=is_array(Registration::submitted('acf')) ? Registration::submitted('acf') : [];
         $validated=[];
-        if (array_diff(array_keys($raw),array_keys(self::fields()))) { wp_send_json(['message'=>__('Unexpected registration field.','apls-fluentauth-extensions')],422); }
+        if (array_diff(array_keys($raw),array_keys(self::fields()))) { wp_send_json(['message'=>__('Unexpected registration field.','aplusplugins-fluentauth-extensions')],422); }
         foreach (self::fields() as $key=>$field) {
             $value=$raw[$key] ?? null;
             /* translators: Placeholder values identify the ACF field, group, or email validation detail. */
-            if (!empty($field['required']) && ($value===null || $value==='' || $value===[])) { wp_send_json(['message'=>sprintf(__('Required field is missing: %s','apls-fluentauth-extensions'),$field['label'])],422); }
+            if (!empty($field['required']) && ($value===null || $value==='' || $value===[])) { wp_send_json(['message'=>sprintf(__('Required field is missing: %s','aplusplugins-fluentauth-extensions'),$field['label'])],422); }
             if ($value===null) { continue; }
-            if (!is_scalar($value) && !is_array($value)) { wp_send_json(['message'=>__('Invalid field value.','apls-fluentauth-extensions')],422); }
+            if (!is_scalar($value) && !is_array($value)) { wp_send_json(['message'=>__('Invalid field value.','aplusplugins-fluentauth-extensions')],422); }
             $valid=self::normalize($field,$value);
             if (is_wp_error($valid)) { wp_send_json(['message'=>$valid->get_error_message()],422); }
             $validated[$key]=$valid;
         }
-        if (!Pending_Registrations::store($transaction,$email,self::schema_hash(),$validated)) { wp_send_json(['message'=>__('Unable to save registration fields. Try again.','apls-fluentauth-extensions')],503); }
+        if (!Pending_Registrations::store($transaction,$email,self::schema_hash(),$validated)) { wp_send_json(['message'=>__('Unable to save registration fields. Try again.','aplusplugins-fluentauth-extensions')],503); }
     }
     /** Native registration: use WP_Error rather than the shortcode JSON transport. */
     public static function capture_native(\WP_Error $errors,string $email,bool $second): void {
@@ -148,39 +148,39 @@ final class ACF_Adapter {
         $issues=self::validate_groups(self::selected());
         if ($issues) {
             self::notify($issues);
-            $errors->add('apls_acf_schema',__('Registration is temporarily unavailable. Please contact the site administrator.','apls-fluentauth-extensions'));
+            $errors->add('apls_acf_schema',__('Registration is temporarily unavailable. Please contact the site administrator.','aplusplugins-fluentauth-extensions'));
             return;
         }
-        if (!$second && !Registration::registration_nonce_valid()) { $errors->add('apls_acf_nonce',__('Registration form expired. Reload and try again.','apls-fluentauth-extensions')); return; }
+        if (!$second && !Registration::registration_nonce_valid()) { $errors->add('apls_acf_nonce',__('Registration form expired. Reload and try again.','aplusplugins-fluentauth-extensions')); return; }
         $submitted_transaction = Registration::submitted_text('apls_faext_transaction');
         $transaction = $submitted_transaction ?? '';
         if (!preg_match('/^[a-f0-9]{64}$/',$transaction)) {
-            $errors->add('apls_acf_transaction',__('Registration session missing. Reload the registration page.','apls-fluentauth-extensions'));
+            $errors->add('apls_acf_transaction',__('Registration session missing. Reload the registration page.','aplusplugins-fluentauth-extensions'));
             return;
         }
         $email=strtolower(sanitize_email($email));
         if ($second) {
             if (!Pending_Registrations::valid($transaction,$email,self::schema_hash())) {
-                $errors->add('apls_acf_expired',__('Registration session expired. Please restart registration.','apls-fluentauth-extensions'));
+                $errors->add('apls_acf_expired',__('Registration session expired. Please restart registration.','aplusplugins-fluentauth-extensions'));
             }
             return;
         }
         $raw=is_array(Registration::submitted('acf')) ? Registration::submitted('acf') : [];
         $payload=[];
         if (array_diff(array_keys($raw),array_keys(self::fields()))) {
-            $errors->add('apls_acf_unknown',__('Unexpected registration field.','apls-fluentauth-extensions'));
+            $errors->add('apls_acf_unknown',__('Unexpected registration field.','aplusplugins-fluentauth-extensions'));
             return;
         }
         foreach (self::fields() as $key=>$field) {
             $value=$raw[$key] ?? null;
             if (!empty($field['required']) && ($value===null || $value==='' || $value===[])) {
                 /* translators: Placeholder values identify the ACF field, group, or email validation detail. */
-                $errors->add('apls_acf_required',sprintf(__('Required field missing: %s','apls-fluentauth-extensions'),$field['label']));
+                $errors->add('apls_acf_required',sprintf(__('Required field missing: %s','aplusplugins-fluentauth-extensions'),$field['label']));
                 continue;
             }
             if ($value===null) { continue; }
             if (!is_scalar($value) && !is_array($value)) {
-                $errors->add('apls_acf_invalid',__('Invalid registration field value.','apls-fluentauth-extensions'));
+                $errors->add('apls_acf_invalid',__('Invalid registration field value.','aplusplugins-fluentauth-extensions'));
                 continue;
             }
             $normalized=self::normalize($field,$value);
@@ -188,7 +188,7 @@ final class ACF_Adapter {
             $payload[$key]=$normalized;
         }
         if (!$errors->has_errors() && !Pending_Registrations::store($transaction,$email,self::schema_hash(),$payload)) {
-            $errors->add('apls_acf_storage',__('Registration fields could not be stored. Please retry.','apls-fluentauth-extensions'));
+            $errors->add('apls_acf_storage',__('Registration fields could not be stored. Please retry.','aplusplugins-fluentauth-extensions'));
         }
     }
     public static function validate_native_second_step($username,$email,$errors): void {
@@ -199,38 +199,38 @@ final class ACF_Adapter {
     private static function normalize(array $field,$value) {
         $type=$field['type'];
         if (is_array($value)) {
-            if ($type!=='checkbox' && $type!=='select') { return new \WP_Error('invalid',__('Invalid field value.','apls-fluentauth-extensions')); }
-            if (count($value)>64) { return new \WP_Error('invalid',__('Too many choices.','apls-fluentauth-extensions')); }
-            foreach ($value as $option) { if (!is_string($option) && !is_int($option)) { return new \WP_Error('invalid',__('Invalid nested choice value.','apls-fluentauth-extensions')); } }
+            if ($type!=='checkbox' && $type!=='select') { return new \WP_Error('invalid',__('Invalid field value.','aplusplugins-fluentauth-extensions')); }
+            if (count($value)>64) { return new \WP_Error('invalid',__('Too many choices.','aplusplugins-fluentauth-extensions')); }
+            foreach ($value as $option) { if (!is_string($option) && !is_int($option)) { return new \WP_Error('invalid',__('Invalid nested choice value.','aplusplugins-fluentauth-extensions')); } }
             $value=array_map('sanitize_text_field',$value);
-        } else { if (!is_string($value) && !is_numeric($value)) { return new \WP_Error('invalid',__('Invalid scalar value.','apls-fluentauth-extensions')); } $value=($type==='textarea') ? sanitize_textarea_field($value) : sanitize_text_field($value); }
+        } else { if (!is_string($value) && !is_numeric($value)) { return new \WP_Error('invalid',__('Invalid scalar value.','aplusplugins-fluentauth-extensions')); } $value=($type==='textarea') ? sanitize_textarea_field($value) : sanitize_text_field($value); }
         // Hard maximum applies even when administrators omit ACF maxlength.
-        if (is_string($value) && strlen($value)>4096) { return new \WP_Error('invalid',__('Field value is too large.','apls-fluentauth-extensions')); }
-        if (is_array($value)) { foreach ($value as $choice) { if (strlen((string)$choice)>256) { return new \WP_Error('invalid',__('Field choice is too large.','apls-fluentauth-extensions')); } } }
+        if (is_string($value) && strlen($value)>4096) { return new \WP_Error('invalid',__('Field value is too large.','aplusplugins-fluentauth-extensions')); }
+        if (is_array($value)) { foreach ($value as $choice) { if (strlen((string)$choice)>256) { return new \WP_Error('invalid',__('Field choice is too large.','aplusplugins-fluentauth-extensions')); } } }
         // Enforce both cardinality and allowed values on the server, independently
         // of the browser's <select>, checkbox and radio controls.
         if ($type==='select' && !empty($field['multiple']) && !is_array($value)) {
-            return new \WP_Error('invalid',__('Multiple selection requires an array.','apls-fluentauth-extensions'));
+            return new \WP_Error('invalid',__('Multiple selection requires an array.','aplusplugins-fluentauth-extensions'));
         }
         if ($type==='select' && empty($field['multiple']) && is_array($value)) {
-            return new \WP_Error('invalid',__('Single selection must not be an array.','apls-fluentauth-extensions'));
+            return new \WP_Error('invalid',__('Single selection must not be an array.','aplusplugins-fluentauth-extensions'));
         }
         if ($type==='radio' && is_array($value)) {
-            return new \WP_Error('invalid',__('Radio selection must be a single value.','apls-fluentauth-extensions'));
+            return new \WP_Error('invalid',__('Radio selection must be a single value.','aplusplugins-fluentauth-extensions'));
         }
         if ($type==='checkbox' && !is_array($value)) {
-            return new \WP_Error('invalid',__('Checkbox selections must be an array.','apls-fluentauth-extensions'));
+            return new \WP_Error('invalid',__('Checkbox selections must be an array.','aplusplugins-fluentauth-extensions'));
         }
         if (is_array($value) && count($value)!==count(array_unique(array_map('strval',$value)))) {
-            return new \WP_Error('invalid',__('Duplicate field selections are not allowed.','apls-fluentauth-extensions'));
+            return new \WP_Error('invalid',__('Duplicate field selections are not allowed.','aplusplugins-fluentauth-extensions'));
         }
         if (in_array($type,['select','checkbox','radio'],true)) {
             $choices=array_map('strval',array_keys((array)($field['choices'] ?? [])));
-            foreach ((array)$value as $item) { if (!in_array((string)$item,$choices,true)) { return new \WP_Error('invalid',__('Invalid field choice.','apls-fluentauth-extensions')); } }
+            foreach ((array)$value as $item) { if (!in_array((string)$item,$choices,true)) { return new \WP_Error('invalid',__('Invalid field choice.','aplusplugins-fluentauth-extensions')); } }
         }
-        if ($type==='email' && $value!=='' && !is_email($value)) { return new \WP_Error('invalid',__('Invalid email field.','apls-fluentauth-extensions')); }
-        if ($type==='url' && $value!=='' && (!filter_var($value,FILTER_VALIDATE_URL) || !in_array(strtolower((string)wp_parse_url((string)$value, PHP_URL_SCHEME)), ['http','https'],true))) { return new \WP_Error('invalid',__('Invalid URL field.','apls-fluentauth-extensions')); }
-        if ($type==='number' && $value!=='' && (!is_numeric($value) || !is_finite((float)$value))) { return new \WP_Error('invalid',__('Invalid number field.','apls-fluentauth-extensions')); }
+        if ($type==='email' && $value!=='' && !is_email($value)) { return new \WP_Error('invalid',__('Invalid email field.','aplusplugins-fluentauth-extensions')); }
+        if ($type==='url' && $value!=='' && (!filter_var($value,FILTER_VALIDATE_URL) || !in_array(strtolower((string)wp_parse_url((string)$value, PHP_URL_SCHEME)), ['http','https'],true))) { return new \WP_Error('invalid',__('Invalid URL field.','aplusplugins-fluentauth-extensions')); }
+        if ($type==='number' && $value!=='' && (!is_numeric($value) || !is_finite((float)$value))) { return new \WP_Error('invalid',__('Invalid number field.','aplusplugins-fluentauth-extensions')); }
         // Enforce ACF's configured scalar bounds on the server, not merely in the browser.
         // This deliberately does not claim to implement all custom ACF validation filters.
         if (in_array($type, ['text','textarea','email','url'], true) && is_string($value)) {
@@ -239,7 +239,7 @@ final class ACF_Adapter {
                 if (isset($field[$setting]) && $field[$setting] !== '' && is_numeric($field[$setting])) {
                     $threshold=max(0,(int)$field[$setting]);
                     if (($bound==='min' && $length<$threshold) || ($bound==='max' && $length>$threshold)) {
-                        return new \WP_Error('invalid',__('Field length is outside the permitted range.','apls-fluentauth-extensions'));
+                        return new \WP_Error('invalid',__('Field length is outside the permitted range.','aplusplugins-fluentauth-extensions'));
                     }
                 }
             }
@@ -248,7 +248,7 @@ final class ACF_Adapter {
             foreach (['min'=>'min','max'=>'max'] as $setting=>$bound) {
                 if (isset($field[$setting]) && $field[$setting] !== '' && is_numeric($field[$setting])) {
                     if (($bound==='min' && (float)$value<(float)$field[$setting]) || ($bound==='max' && (float)$value>(float)$field[$setting])) {
-                        return new \WP_Error('invalid',__('Number is outside the permitted range.','apls-fluentauth-extensions'));
+                        return new \WP_Error('invalid',__('Number is outside the permitted range.','aplusplugins-fluentauth-extensions'));
                     }
                 }
             }
@@ -258,13 +258,13 @@ final class ACF_Adapter {
             foreach (['min'=>'min','max'=>'max'] as $setting=>$bound) {
                 if (isset($field[$setting]) && $field[$setting] !== '' && is_numeric($field[$setting])) {
                     if (($bound==='min' && $count<(int)$field[$setting]) || ($bound==='max' && $count>(int)$field[$setting])) {
-                        return new \WP_Error('invalid',__('Invalid number of selected choices.','apls-fluentauth-extensions'));
+                        return new \WP_Error('invalid',__('Invalid number of selected choices.','aplusplugins-fluentauth-extensions'));
                     }
                 }
             }
         }
         if ($type==='true_false') {
-            if (is_array($value) || !in_array((string)$value,['0','1',''],true)) { return new \WP_Error('invalid',__('Invalid boolean value.','apls-fluentauth-extensions')); }
+            if (is_array($value) || !in_array((string)$value,['0','1',''],true)) { return new \WP_Error('invalid',__('Invalid boolean value.','aplusplugins-fluentauth-extensions')); }
             $value=(int)($value==='1' || $value===1);
         }
         $formats=['date_picker'=>'Ymd','date_time_picker'=>'Y-m-d H:i:s','time_picker'=>'H:i:s'];
@@ -286,7 +286,7 @@ final class ACF_Adapter {
                     break;
                 }
             }
-            if (!$parsed) { return new \WP_Error('invalid',__('Invalid date or time format.','apls-fluentauth-extensions')); }
+            if (!$parsed) { return new \WP_Error('invalid',__('Invalid date or time format.','aplusplugins-fluentauth-extensions')); }
         }
         return $value;
     }
@@ -301,13 +301,13 @@ final class ACF_Adapter {
         $email = $user ? strtolower(sanitize_email($user->user_email)) : '';
         if (!$email) {
             Diagnostics::log('acf.persist_failure', ['reason' => 'user_email_unavailable', 'user_id' => absint($user_id)]);
-            self::notify([__('Created user email unavailable for ACF persistence.','apls-fluentauth-extensions')]);
+            self::notify([__('Created user email unavailable for ACF persistence.','aplusplugins-fluentauth-extensions')]);
             return;
         }
         $payload=Pending_Registrations::read($transaction,$email,self::schema_hash());
         if ($payload===null) {
             Diagnostics::log('acf.persist_failure', ['reason' => 'pending_lookup_failed', 'user_id' => absint($user_id)]);
-            self::notify([__('Pending registration field data was not found after user creation.','apls-fluentauth-extensions')]);
+            self::notify([__('Pending registration field data was not found after user creation.','aplusplugins-fluentauth-extensions')]);
             return;
         }
         $fields=self::fields();
@@ -326,7 +326,7 @@ final class ACF_Adapter {
             }
         }
         Diagnostics::log('acf.persist_result',['user_id'=>absint($user_id),'field_count'=>count($payload),'saved_count'=>$saved,'failed_count'=>$failed]);
-        if ($failed) { self::notify([__('Some ACF fields could not be confirmed after registration.','apls-fluentauth-extensions')]); return; }
+        if ($failed) { self::notify([__('Some ACF fields could not be confirmed after registration.','aplusplugins-fluentauth-extensions')]); return; }
         Pending_Registrations::delete($transaction);
         do_action('apls/fluentauth/acf_fields_saved',absint($user_id),array_keys($payload));
     }
