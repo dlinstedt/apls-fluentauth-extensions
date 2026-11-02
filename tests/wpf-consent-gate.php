@@ -1,6 +1,6 @@
 <?php
 /* Standalone regression for WPFusion acknowledgment gating. */
-namespace APLS\FluentAuthExtensions;
+namespace APlusPlugins\FluentAuthExtensions;
 if (!defined('ABSPATH')) { define('ABSPATH', __DIR__); }
 require dirname(__DIR__) . '/includes/class-settings.php';
 $cases = [
