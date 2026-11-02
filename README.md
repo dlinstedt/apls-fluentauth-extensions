@@ -1,4 +1,4 @@
-# FluentAuth Registration Extensions
+# APlusPlugins Registration Extensions for FluentAuth
 
 **Publisher:** [APlusPlugins](https://aplusplugins.com) | **Version:** 1.0.30 | **License:** GPL-2.0-or-later | **WordPress.org contributor:** `dlinstedt`
 
