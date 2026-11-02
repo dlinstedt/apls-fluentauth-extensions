@@ -1,6 +1,6 @@
 # FluentAuth Registration Extensions
 
-**Publisher:** [APlusPlugins](https://aplusplugins.com) | **Version:** 1.0.29 | **License:** GPL-2.0-or-later | **WordPress.org contributor:** `dlinstedt`
+**Publisher:** [APlusPlugins](https://aplusplugins.com) | **Version:** 1.0.30 | **License:** GPL-2.0-or-later | **WordPress.org contributor:** `dlinstedt`
 
 Extends **FluentAuth (Fluent Security)** registration with independent marketing consent, optionally selected Advanced Custom Fields (ACF) user fields, email-address quality checks, and an optional CRM adapter. FluentAuth remains the authority for account creation, password handling, email-code verification, and login. The extension does **not** replace FluentAuth, create its own login system, or require a CRM to operate.
 
